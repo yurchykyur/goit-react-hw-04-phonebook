@@ -20,7 +20,6 @@ export default function App() {
   function reviseLocalStorage() {
     const savedLocaleStorage = window.localStorage.getItem(LS_KEY);
     if (savedLocaleStorage) {
-      console.log(JSON.parse(savedLocaleStorage));
       return [...JSON.parse(savedLocaleStorage)];
     }
     return [];
