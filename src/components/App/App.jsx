@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
 import ContactForm from 'components/ContactForm';
@@ -13,46 +13,41 @@ import { AppContainer, MainTitle, SecondTitle } from './App.styled';
 
 const LS_KEY = 'user_phonebook';
 
-export default class App extends Component {
-  state = { contacts: [], filter: '' };
+export default function App() {
+  const [contacts, setContacts] = useState(() => reviseLocalStorage());
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
-    const savedLocaleStorage = localStorage.getItem(LS_KEY);
+  function reviseLocalStorage() {
+    const savedLocaleStorage = window.localStorage.getItem(LS_KEY);
     if (savedLocaleStorage) {
-      const localStoragecontacts = JSON.parse(savedLocaleStorage);
-      this.setState({ contacts: [...localStoragecontacts] });
+      console.log(JSON.parse(savedLocaleStorage));
+      return [...JSON.parse(savedLocaleStorage)];
     }
+    return [];
   }
 
-  componentDidUpdate(_, prevState) {
-    if (prevState.contacts.length !== this.state.contacts.length) {
-      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    window.localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+  }, [contacts]);
 
-  addContact = data => {
-    if (this.state.contacts.find(contact => contact.name === data.name)) {
+  const addContact = data => {
+    if (contacts.find(contact => contact.name === data.name)) {
       alert(`${data.name} is already in contacts`);
       return;
     }
-
     const contact = { ...data, id: nanoid() };
-
-    this.setState(({ contacts }) => ({ contacts: [contact, ...contacts] }));
+    setContacts(prevState => [contact, ...prevState]);
   };
 
-  deleteContact = id => {
-    this.setState(({ contacts }) => ({
-      contacts: contacts.filter(contact => contact.id !== id),
-    }));
+  const deleteContact = id => {
+    setContacts(contacts.filter(contact => contact.id !== id));
   };
 
-  onChangeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  const onChangeFilter = e => {
+    setFilter(e.currentTarget.value);
   };
 
-  getFilteredContact = () => {
-    const { filter, contacts } = this.state;
+  const getFilteredContact = () => {
     const normalizedFilterQuery = filter.toLowerCase();
 
     return contacts.filter(contact =>
@@ -60,31 +55,26 @@ export default class App extends Component {
     );
   };
 
-  render() {
-    const { filter } = this.state;
-    const filteredContacts = this.getFilteredContact();
-    const isContact = !this.state.contacts.length ? false : true;
+  const filteredContacts = getFilteredContact();
+  const isContact = !contacts.length ? false : true;
 
-    return (
-      <AppContainer>
-        <MainTitle>Phonebook</MainTitle>
-        <ContactForm formSubmitHandler={this.addContact} />
-        <SecondTitle>Contacts</SecondTitle>
-        <Filter onChangeFilter={this.onChangeFilter} value={filter} />
-        <ContactAmount
-          contactsAmount={this.state.contacts.length}
-        ></ContactAmount>
-        {isContact ? (
-          <ContactList
-            contactList={filteredContacts}
-            deleteContact={this.deleteContact}
-          />
-        ) : (
-          <Notification
-            message={'There are no contacts in your phonebook'}
-          ></Notification>
-        )}
-      </AppContainer>
-    );
-  }
+  return (
+    <AppContainer>
+      <MainTitle>Phonebook</MainTitle>
+      <ContactForm formSubmitHandler={addContact} />
+      <SecondTitle>Contacts</SecondTitle>
+      <Filter onChangeFilter={onChangeFilter} value={filter} />
+      <ContactAmount contactsAmount={contacts.length}></ContactAmount>
+      {isContact ? (
+        <ContactList
+          contactList={filteredContacts}
+          deleteContact={deleteContact}
+        />
+      ) : (
+        <Notification
+          message={'There are no contacts in your phonebook'}
+        ></Notification>
+      )}
+    </AppContainer>
+  );
 }
