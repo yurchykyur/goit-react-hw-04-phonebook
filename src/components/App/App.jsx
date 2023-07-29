@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 
 import ContactForm from 'components/ContactForm';
@@ -12,7 +12,7 @@ import { useLocalStorage } from 'ServiceLocalStorage/serviceLocalStorage';
 
 import { AppContainer, MainTitle, SecondTitle } from './App.styled';
 
-const LS_KEY = 'user_phonebook';
+// const LS_KEY = 'user_phonebook';
 
 export default function App() {
   const [contacts, setContacts] = useLocalStorage('contacts', []);
