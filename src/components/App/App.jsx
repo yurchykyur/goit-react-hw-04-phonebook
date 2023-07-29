@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 
 import ContactForm from 'components/ContactForm';
@@ -8,26 +8,27 @@ import ContactAmount from 'components/ContactAmount';
 import Notification from 'components/Notification';
 
 // import initialBaseContacts from 'Data/initialBaseContacts';
+import { useLocalStorage } from 'ServiceLocalStorage/serviceLocalStorage';
 
 import { AppContainer, MainTitle, SecondTitle } from './App.styled';
 
-const LS_KEY = 'user_phonebook';
+// const LS_KEY = 'user_phonebook';
 
 export default function App() {
-  const [contacts, setContacts] = useState(() => reviseLocalStorage());
+  const [contacts, setContacts] = useLocalStorage('contacts', []);
   const [filter, setFilter] = useState('');
 
-  function reviseLocalStorage() {
-    const savedLocaleStorage = window.localStorage.getItem(LS_KEY);
-    if (savedLocaleStorage) {
-      return [...JSON.parse(savedLocaleStorage)];
-    }
-    return [];
-  }
+  // function reviseLocalStorage() {
+  //   const savedLocaleStorage = window.localStorage.getItem(LS_KEY);
+  //   if (savedLocaleStorage) {
+  //     return [...JSON.parse(savedLocaleStorage)];
+  //   }
+  //   return [];
+  // }
 
-  useEffect(() => {
-    window.localStorage.setItem(LS_KEY, JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   window.localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+  // }, [contacts]);
 
   const addContact = data => {
     if (contacts.find(contact => contact.name === data.name)) {
