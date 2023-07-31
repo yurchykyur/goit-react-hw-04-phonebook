@@ -16,18 +16,6 @@ export default function ContactForm({ formSubmitHandler }) {
   const [name, setName] = useLocalStorage('name', '');
   const [number, setNumber] = useLocalStorage('number', '');
 
-  // function useLocalStorage(key, defaultValue) {
-  //   const [state, setState] = useState(() => {
-  //     return JSON.parse(window.localStorage.getItem(key)) ?? defaultValue;
-  //   });
-
-  //   useEffect(() => {
-  //     window.localStorage.setItem(key, JSON.stringify(state));
-  //   }, [key, state]);
-
-  //   return [state, setState];
-  // }
-
   const handleChange = e => {
     const { name, value } = e.target;
 

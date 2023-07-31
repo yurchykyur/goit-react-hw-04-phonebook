@@ -7,28 +7,14 @@ import Filter from 'components/Filter';
 import ContactAmount from 'components/ContactAmount';
 import Notification from 'components/Notification';
 
-// import initialBaseContacts from 'Data/initialBaseContacts';
 import { useLocalStorage } from 'ServiceLocalStorage/serviceLocalStorage';
 
 import { AppContainer, MainTitle, SecondTitle } from './App.styled';
 
-// const LS_KEY = 'user_phonebook';
 
 export default function App() {
   const [contacts, setContacts] = useLocalStorage('contacts', []);
   const [filter, setFilter] = useState('');
-
-  // function reviseLocalStorage() {
-  //   const savedLocaleStorage = window.localStorage.getItem(LS_KEY);
-  //   if (savedLocaleStorage) {
-  //     return [...JSON.parse(savedLocaleStorage)];
-  //   }
-  //   return [];
-  // }
-
-  // useEffect(() => {
-  //   window.localStorage.setItem(LS_KEY, JSON.stringify(contacts));
-  // }, [contacts]);
 
   const addContact = data => {
     if (contacts.find(contact => contact.name === data.name)) {
@@ -40,7 +26,7 @@ export default function App() {
   };
 
   const deleteContact = id => {
-    setContacts(contacts.filter(contact => contact.id !== id));
+    setContacts(prevState => prevState.filter(contact => contact.id !== id));
   };
 
   const onChangeFilter = e => {
